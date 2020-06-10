@@ -1,0 +1,126 @@
+.app-wrapper {
+  height: 100%;
+
+  .app-main {
+    width: 100%;
+    margin-left: $sidebarWeight;
+    position: relative;
+    overflow: auto;
+  }
+
+  .sidebar-container {
+    transition: all 0.5s;
+    width: $sidebarWeight !important;
+    background-color: #FFF;
+    height: 100%;
+    position: fixed;
+    font-size: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1001;
+    overflow: hidden;
+
+    .user {
+      position: relative;
+      padding: 1.25rem;
+      width: 100%;
+      text-align: center;
+      overflow: hidden;
+
+      .info {
+        margin-top: 0.1875rem;
+        .user-name {
+          color: #4b4b4b;
+          font-size: 0.875rem;
+          font-weight: bold;
+        }
+
+        .user-motto {
+          color: #d8d8d8;
+          font-size: 0.75rem;
+        }
+      }
+
+      .operate-box {
+        margin-top: 0.625rem;
+        font-size: 1.25rem;
+      }
+    }
+
+    .scrollbar-wrapper {
+      overflow-x: hidden !important;
+    }
+
+    .el-scrollbar {
+      // 用户信息 (12.1875rem) + 退出登录 (3.75rem) = 15.9375rem
+      height: calc(100% - 15.9375rem);
+    }
+
+    .el-menu {
+      border-right: none;
+    }
+
+
+    .switch-box {
+      padding: 1.25rem;
+      position: relative;
+      width: 100%;
+
+      i {
+        margin-right: 0.3125rem;
+        width: 1.5rem;
+        text-align: center;
+        font-size: 1.125rem;
+      }
+
+      span {
+        font-size: 0.875rem;
+        color: #303133;
+        cursor: pointer;
+      }
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+
+    .app-main {
+      margin-left: $smSidebarWeight;
+    }
+
+    .sidebar-container {
+      width: $smSidebarWeight !important;
+
+      .user {
+        padding: 0.625rem 0.3125rem;
+
+        .avatar {
+          width: 3.125rem !important;
+          height: 3.125rem !important;
+          line-height: 3.125rem !important;
+        }
+
+        .info {
+          display: none;
+        }
+
+        .operate-box {
+          display: none;
+        }
+      }
+
+      .el-scrollbar {
+        // 用户信息 (4.375rem) + 退出登录 (3.625rem) = 15.9375rem
+        height: calc(100% - 8rem);
+
+        .el-menu-item > span {
+          display: none;
+        }
+      }
+
+      .switch-box > .hand > span {
+        display: none;
+      }
+    }
+  }
+}
