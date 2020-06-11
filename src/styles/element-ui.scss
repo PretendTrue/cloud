@@ -23,7 +23,7 @@
   background-color: unset;
 }
 
-.el-table {
+.custom-table > .el-table {
   &::before {
     display: none;
   }

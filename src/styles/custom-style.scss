@@ -147,3 +147,13 @@
 .overflow-y-auto { overflow-y: auto };
 
 .hide-scrollbar::-webkit-scrollbar { display: none; }
+
+.link-type,
+.link-type:focus {
+  color: #337ab7;
+  cursor: pointer;
+
+  &:hover {
+    color: #337ab7;
+  }
+}
