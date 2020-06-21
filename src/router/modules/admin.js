@@ -1,7 +1,7 @@
 import App from '@/App'
 
 const admin = {
-  path: "admin",
+  path: "/admin",
   redirect: '/admin/users',
   component: App,
   children: [
@@ -30,7 +30,32 @@ const admin = {
               activeMenu: '/admin/users'
           }
         }
-      ]
+      ],
+      meta: {
+        title: '管理员',
+        actions: [
+          {
+            value: 'list',
+            text: '列表'
+          },
+          {
+            value: 'show',
+            text: '详情'
+          },
+          {
+            value: 'create',
+            text: '添加'
+          },
+          {
+            value: 'edit',
+            text: '修改'
+          },
+          {
+            value: 'delete',
+            text: '删除'
+          }
+        ]
+      }
     },
     {
       path: "roles",
@@ -57,7 +82,32 @@ const admin = {
               activeMenu: '/admin/roles'
           }
         }
-      ]
+      ],
+      meta: {
+        title: '角色',
+        actions: [
+          {
+            value: 'list',
+            text: '列表'
+          },
+          {
+            value: 'show',
+            text: '详情'
+          },
+          {
+            value: 'create',
+            text: '添加'
+          },
+          {
+            value: 'edit',
+            text: '修改'
+          },
+          {
+            value: 'delete',
+            text: '删除'
+          }
+        ]
+      }
     },
     {
       path: "departments",
@@ -84,7 +134,32 @@ const admin = {
               activeMenu: '/admin/departments'
           }
         }
-      ]
+      ],
+      meta: {
+        title: '部门',
+        actions: [
+          {
+            value: 'list',
+            text: '列表'
+          },
+          {
+            value: 'show',
+            text: '详情'
+          },
+          {
+            value: 'create',
+            text: '添加'
+          },
+          {
+            value: 'edit',
+            text: '修改'
+          },
+          {
+            value: 'delete',
+            text: '删除'
+          }
+        ]
+      }
     },
     {
       path: "permissions",
@@ -111,9 +186,37 @@ const admin = {
               activeMenu: '/admin/permissions'
           }
         }
-      ]
+      ],
+      meta: {
+        title: '权限',
+        actions: [
+          {
+            value: 'list',
+            text: '列表'
+          },
+          {
+            value: 'show',
+            text: '详情'
+          },
+          {
+            value: 'create',
+            text: '添加'
+          },
+          {
+            value: 'edit',
+            text: '修改'
+          },
+          {
+            value: 'delete',
+            text: '删除'
+          }
+        ]
+      }
     }
-  ]
+  ],
+  meta: {
+    title: '系统管理'
+  }
 }
 
 export default admin

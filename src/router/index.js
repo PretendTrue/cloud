@@ -6,13 +6,15 @@ import admin from './modules/admin'
 
 Vue.use(VueRouter);
 
+export const childrenRoutes = [
+  admin
+]
+
 const routes = [
   {
     path: "/",
     component: Layout,
-    children: [
-      admin
-    ]
+    children: childrenRoutes
   }
 ];
 
