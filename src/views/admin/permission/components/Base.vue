@@ -18,7 +18,7 @@
             <el-form-item label="菜单">
               <el-cascader
                 class="w-full"
-                placeholder="试试搜索：指南"
+                placeholder="试试搜索：权限"
                 :options="routes"
                 :props="{
                   multiple: true,
@@ -28,7 +28,7 @@
                 filterable
                 clearable
                 collapse-tags
-                ref="test"
+                ref="changeMenu"
                 @change="change"
               >
               </el-cascader>
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { isEmpty } from 'lodash'
+import { isEmpty, findIndex, findLastIndex, startsWith } from 'lodash'
 import { childrenRoutes } from '@/router/index'
 
 export default {
@@ -100,17 +100,61 @@ export default {
         return arr
       }
     },
+    /**
+     * 菜单选中
+     */
     change() {
-      let menus = this.$refs.test.getCheckedNodes();
+      let nodes = this.$refs.changeMenu.getCheckedNodes();
+      let menus = this.form.actions
 
-      if (isEmpty(menus)) {
+      if (isEmpty(nodes)) {
         this.form.actions = [];
         return ;
       }
 
-      menus.forEach(item => {
-        console.info(item)
-        this.form.actions.push(item.data)
+      // 添加节点数据
+      nodes.forEach( node => {
+        // 在当前菜单数据下『从右到左』查询是否存在本节点
+        let nodeIndex = findLastIndex(menus, value => {
+          return startsWith(value.path, node.value)
+        })
+
+        if (isEmpty(node.parent)) {
+          // 没有父节点，并且在当前菜单数据下不存在本节点，则添加
+
+          if (nodeIndex === -1) menus.push(node.data)
+        } else {
+          // 在当前菜单数据下『从右到左』查询当前父节点下的最后一个节点的下标
+          let index = findLastIndex(menus, value => {
+            return startsWith(value.path, node.parent.value)
+          })
+
+          if (index === -1) {
+            // 不存在父节点下的数据
+            // 直接添加父节点和本节点
+            menus.push(node.parent.data, node.data)
+          } else {
+            // 存在父节点
+            // 当前菜单数据下不存在本节点，则在父节点下最后一个节点后面添加本节点
+
+            if (nodeIndex === -1) menus.splice(index + 1, 0, node.data)
+
+          }
+        }
+      })
+
+      // 寻找差异化节点，进行删除操作
+      menus.forEach( (menu, key) => {
+        // 获取菜单数据中的节点是否在所有选中的节点中
+        let index = findIndex(nodes, node => {
+          return node.value === menu.path
+        })
+
+        if (index === -1) {
+          // 不是父节点，直接删除
+          if (isEmpty(menu.children)) menus.splice(key, 1)
+        }
+
       })
     }
   }
