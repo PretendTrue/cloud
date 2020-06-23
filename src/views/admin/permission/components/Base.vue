@@ -19,9 +19,11 @@
               <el-cascader
                 class="w-full"
                 placeholder="试试搜索：权限"
+                v-model="form.actions"
                 :options="routes"
                 :props="{
                   multiple: true,
+                  emitPath: false,
                   value: 'path',
                   label: 'title'
                 }"
@@ -38,7 +40,7 @@
       </el-card>
     </el-form>
     <div class="custom-table mt-8">
-      <el-table :data="form.actions">
+      <el-table :data="menus">
         <el-table-column property="action" label="操作权限">
           <template slot-scope="{row}">
             <el-tag v-for="action in row.actions" :key="action.value" class="mr-2 mb-1">{{action.text}}</el-tag>
@@ -63,7 +65,8 @@ export default {
         actions: []
       },
       value: '',
-      routes: []
+      routes: [],
+      menus: []
     };
   },
   created() {
@@ -103,12 +106,22 @@ export default {
     /**
      * 菜单选中
      */
-    change() {
-      let nodes = this.$refs.changeMenu.getCheckedNodes();
-      let menus = this.form.actions
+    change(arr) {
+      let nodesArr = this.$refs.changeMenu.getCheckedNodes();
+      let menus = this.menus
+      let nodes = []
+
+      arr.forEach((item, key) => {
+        let nodeIndex = findIndex(nodesArr, nodeArr => {
+          return nodeArr.value === item
+        })
+
+        nodes.splice(key, 0, nodesArr[nodeIndex])
+      })
 
       if (isEmpty(nodes)) {
         this.form.actions = [];
+        this.menus = [];
         return ;
       }
 
