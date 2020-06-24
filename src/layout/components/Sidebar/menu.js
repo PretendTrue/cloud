@@ -5,6 +5,11 @@ export default [
     icon: "el-icon-data-line"
   },
   {
+    title: "客户管理",
+    path: "/customers",
+    icon: "el-icon-data-line"
+  },
+  {
     title: "系统管理",
     path: "/admin",
     icon: "el-icon-setting",

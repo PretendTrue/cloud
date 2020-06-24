@@ -3,11 +3,13 @@ import VueRouter from "vue-router";
 import Layout from '@/layout'
 
 import admin from './modules/admin'
+import customer from './modules/customer'
 
 Vue.use(VueRouter);
 
 export const childrenRoutes = [
-  admin
+  admin,
+  customer
 ]
 
 const routes = [
