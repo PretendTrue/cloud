@@ -14,7 +14,7 @@
         </el-col>
       </el-row>
     </el-col>
-    <el-col>
+    <el-col class="custom-table">
       <el-table :data="list">
         <el-table-column width="60">
           <template slot-scope="{row}">
@@ -23,6 +23,8 @@
         </el-table-column>
         <el-table-column prop="name" label="用户名"></el-table-column>
         <el-table-column prop="email" label="邮箱"></el-table-column>
+        <el-table-column prop="department" label="所属部门"></el-table-column>
+        <el-table-column prop="role" label="角色"></el-table-column>
         <el-table-column label="上次登录日期" width="180" align="center">
           <template slot-scope="{row}">
             <i class="el-icon-time"></i>
@@ -77,6 +79,8 @@ export default {
           avatar: avatar,
           name: "Administrator",
           email: "admin@example.com",
+          department: "技术部",
+          role: "技术部小菜鸟",
           created_at: "2020-06-08",
           last_actived_at: "2020-06-08"
         }

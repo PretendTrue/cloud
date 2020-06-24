@@ -14,19 +14,14 @@
         </el-col>
       </el-row>
     </el-col>
-    <el-col>
+    <el-col class="custom-table">
       <el-table :data="list">
-        <el-table-column width="60">
-          <template slot-scope="{row}">
-            <el-avatar :size="50" :src="row.avatar"></el-avatar>
-          </template>
-        </el-table-column>
-        <el-table-column prop="name" label="用户名"></el-table-column>
-        <el-table-column prop="email" label="邮箱"></el-table-column>
-        <el-table-column label="上次登录日期" width="180" align="center">
+        <el-table-column prop="name" label="角色名"></el-table-column>
+        <el-table-column prop="department" label="所属部门"></el-table-column>
+        <el-table-column label="修改日期" width="180" align="center">
           <template slot-scope="{row}">
             <i class="el-icon-time"></i>
-            <span style="margin-left: 0.625rem">{{ row.last_actived_at }}</span>
+            <span style="margin-left: 0.625rem">{{ row.updated_at }}</span>
           </template>
         </el-table-column>
         <el-table-column label="创建日期" width="180" align="center">
@@ -64,8 +59,6 @@
 </template>
 
 <script>
-import avatar from '@/assets/avatar.png'
-
 export default {
   data() {
     return {
@@ -74,11 +67,10 @@ export default {
       list: [
         {
           id: 1,
-          avatar: avatar,
-          name: "Administrator",
-          email: "admin@example.com",
+          name: "技术部小菜鸟",
+          department: '技术部',
           created_at: "2020-06-08",
-          last_actived_at: "2020-06-08"
+          updated_at: "2020-06-24"
         }
       ]
     };

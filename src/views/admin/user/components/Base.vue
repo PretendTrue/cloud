@@ -21,6 +21,32 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <el-row :gutter="30">
+            <el-col :xs="24" :sm="12" :lg="6" :span="4">
+              <el-form-item label="所属部门">
+                <el-select class="w-full" v-model="form.department" placeholder="请选择">
+                  <el-option
+                    v-for="department in departments"
+                    :key="department.id"
+                    :label="department.name"
+                    :value="department.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :lg="6" :span="4">
+              <el-form-item label="角色">
+                <el-select class="w-full" v-model="form.role" placeholder="请选择">
+                  <el-option
+                    v-for="role in roles"
+                    :key="role.id"
+                    :label="role.name"
+                    :value="role.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-divider content-position="left">修改密码</el-divider>
           <el-row :gutter="30">
             <el-col :xs="24" :sm="24" :lg="6" :span="4">
@@ -58,8 +84,26 @@ export default {
         avatar: avatar,
         username: "Administrator",
         email: "admin@example.com",
-        password: "secret"
-      }
+        password: "secret",
+        department: '',
+        role: ''
+      },
+      departments: [
+        {
+          id: 1,
+          name: '销售部'
+        },
+        {
+          id: 2,
+          name: '技术部'
+        }
+      ],
+      roles: [
+        {
+          id: 1,
+          name: '技术部小菜鸟'
+        }
+      ]
     };
   }
 };
