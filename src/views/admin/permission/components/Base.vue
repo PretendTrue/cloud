@@ -92,10 +92,16 @@ export default {
           let object = {
             path: prefix + item.path,
             title: item.meta.title,
-            actions: item.meta.actions
+            actions: item.meta.actions,
+            parent: prefix.substr(0, prefix.length - 1)
           }
 
-          arr.push(object)
+          if (item.meta.level === 1) {
+            // 一级菜单直接添加
+            this.routes.push(object)
+          } else {
+            arr.push(object)
+          }
         }
       });
 
@@ -112,9 +118,7 @@ export default {
       let nodes = []
 
       arr.forEach((item, key) => {
-        let nodeIndex = findIndex(nodesArr, nodeArr => {
-          return nodeArr.value === item
-        })
+        let nodeIndex = findIndex(nodesArr, { "value" : item })
 
         nodes.splice(key, 0, nodesArr[nodeIndex])
       })
@@ -157,15 +161,26 @@ export default {
       })
 
       // 寻找差异化节点，进行删除操作
-      menus.forEach( (menu, key) => {
+      // 复制菜单，避免循环时删除失效
+      let [...menuArr] =  menus;
+      menuArr.forEach( menu => {
         // 获取菜单数据中的节点是否在所有选中的节点中
-        let index = findIndex(nodes, node => {
-          return node.value === menu.path
-        })
+        let index = findIndex(nodes, { "value" : menu.path })
 
         if (index === -1) {
           // 不是父节点，直接删除
-          if (isEmpty(menu.children)) menus.splice(key, 1)
+          if (isEmpty(menu.children)) {
+            let menuIndex = findIndex(menus, { "path" : menu.path })
+            menus.splice(menuIndex, 1)
+
+            let peerIndex = findIndex(menus, { "parent": menu.parent})
+
+            if (peerIndex === -1) {
+              // 没有同级菜单时，将父级菜单删除
+              let menuParentIndex = findIndex(menus, { "path": menu.parent })
+              menus.splice(menuParentIndex, 1)
+            }
+          }
         }
 
       })
