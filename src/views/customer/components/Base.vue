@@ -1,7 +1,7 @@
 <template>
   <el-card>
     <div slot="header" class="clearfix">
-      <span class="cursor-pointer" @click="cardPointer()">客户资料</span>
+      <span>客户资料</span>
     </div>
     <el-form ref="form" :model="form" label-position="top">
       <el-row :gutter="30">
@@ -108,7 +108,6 @@
 </template>
 
 <script>
-import { findIndex } from 'lodash'
 import country from '@/utils/country'
 
 export default {
@@ -125,31 +124,8 @@ export default {
           id: 2,
           name: '小明'
         }
-      ],
-      test: true
+      ]
     };
-  },
-  methods: {
-    /**
-     * 动态操作 card
-     */
-    cardPointer () {
-      let card_body = this.$el.lastChild;
-      let classArr = card_body.className.split(' ')
-      let showClassIndex = findIndex(classArr, item => { return item === 'card-display-show' })
-      let hiddenClassIndex = findIndex(classArr, item => { return item === 'card-display-hidden' })
-
-      if (showClassIndex === -1 && hiddenClassIndex === -1) {
-        classArr.splice(0, 0, 'card-display-hidden')
-      } else if (showClassIndex === -1) {
-        classArr.splice(hiddenClassIndex, 1, 'card-display-show')
-      } else if (hiddenClassIndex === -1) {
-        classArr.splice(showClassIndex, 1, 'card-display-hidden')
-      }
-
-      card_body.className = classArr.join(' ')
-      this.test = !this.test
-    }
   }
 };
 </script>
