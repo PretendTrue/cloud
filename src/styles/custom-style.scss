@@ -15,7 +15,7 @@
 .w-1\/2 { width: 50%; }
 .w-2\/3 { width: 66.6%; }
 .w-3\/4 { width: 75%; }
-.w-full { width: 100%; }
+.w-full { width: 100% !important; }
 .w-screen { width: 100vw; }
 .max-w-2xs { max-width: 16rem; }
 .max-w-3xs { max-width: 14rem; }
