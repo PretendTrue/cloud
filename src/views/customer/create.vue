@@ -7,12 +7,14 @@
     </el-row>
     <el-row>
       <el-col><Base /></el-col>
+      <el-col class="mt-8"><Contacts :isEdit="false" /></el-col>
     </el-row>
   </div>
 </template>
 
 <script>
 import Base from "./components/Base";
+import Contacts from "./components/Contacts";
 
 export default {
   data() {
@@ -21,7 +23,8 @@ export default {
     };
   },
   components: {
-    Base
+    Base,
+    Contacts
   }
 };
 </script>
