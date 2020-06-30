@@ -4,12 +4,14 @@ import Layout from '@/layout'
 
 import admin from './modules/admin'
 import customer from './modules/customer'
+import manufacturer from './modules/manufacturer'
 
 Vue.use(VueRouter);
 
 export const childrenRoutes = [
   admin,
-  customer
+  customer,
+  manufacturer
 ]
 
 const routes = [
