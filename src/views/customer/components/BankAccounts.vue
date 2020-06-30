@@ -88,7 +88,7 @@ export default {
   },
   data () {
     return {
-      customer: '',
+      customer: 0,
       visibleDialog: false,
       visibleDialogIsEdit: false,
       dialogTitle: '',
