@@ -1,11 +1,11 @@
 <template>
   <div>
-    <el-row class="">
+    <el-row>
       <el-col>
         <h1>{{ title }}</h1>
       </el-col>
     </el-row>
-    <el-row class="">
+    <el-row>
       <el-col>123</el-col>
     </el-row>
     <el-row>

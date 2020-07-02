@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-col class="">
+    <el-col>
       <el-row type="flex" align="middle">
         <el-col :span="12">
           <h1>{{ title }}</h1>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row class="">
+    <el-row>
       <el-col>
         <h1>{{ title }}</h1>
       </el-col>
