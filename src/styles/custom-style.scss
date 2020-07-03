@@ -143,6 +143,8 @@
 
 .display-none { display: none; }
 
+.filter-none { filter: none !important; }
+
 .overflow-y-scroll { overflow-y: scroll };
 .overflow-y-auto { overflow-y: auto };
 
@@ -155,5 +157,44 @@
 
   &:hover {
     color: #337ab7;
+  }
+}
+
+.colored-cards {
+  padding: 1.5rem 1.25rem;
+  border-radius: 0.375rem;
+  color: #000;
+  font-weight: 600;
+  text-align: center;
+  transition: all 500ms;
+  filter: grayscale(100%);
+  cursor: pointer;
+}
+.purple-colored-cards {
+  color: #fff;
+  background: $purpleCard;
+  &:hover {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.25);
+  }
+}
+.purplish-red-colored-cards {
+  color: #fff;
+  background: $purplishRedCard;
+  &:hover {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.25);
+  }
+}
+.blue-colored-cards {
+  color: #fff;
+  background: $blueCard;
+  &:hover {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.25);
+  }
+}
+.turquoise-colored-cards {
+  color: #fff;
+  background: $turquoiseCard;
+  &:hover {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.25);
   }
 }
