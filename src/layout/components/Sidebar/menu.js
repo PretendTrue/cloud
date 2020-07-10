@@ -15,6 +15,28 @@ export default [
     icon: "el-icon-data-line"
   },
   {
+    title: "产品",
+    path: "/products",
+    icon: "el-icon-data-line",
+    children: [
+      {
+        title: "物料管理",
+        path: "materials",
+        icon: "el-icon-stopwatch",
+      },
+      {
+        title: "样品管理",
+        path: "specimens",
+        icon: "el-icon-stopwatch",
+      },
+      {
+        title: "产品列表",
+        path: "list",
+        icon: "el-icon-stopwatch",
+      }
+    ]
+  },
+  {
     title: "系统管理",
     path: "/admin",
     icon: "el-icon-setting",

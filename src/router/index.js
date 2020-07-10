@@ -5,13 +5,15 @@ import Layout from '@/layout'
 import admin from './modules/admin'
 import customer from './modules/customer'
 import manufacturer from './modules/manufacturer'
+import product from './modules/product'
 
 Vue.use(VueRouter);
 
 export const childrenRoutes = [
   admin,
   customer,
-  manufacturer
+  manufacturer,
+  product,
 ]
 
 const routes = [
