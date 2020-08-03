@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Layout from '@/layout'
+import beforeEach from './beforeEach';
 
 import admin from './modules/admin'
 import customer from './modules/customer'
@@ -34,5 +35,7 @@ const router = new VueRouter({
   mode: "history",
   routes
 });
+
+router.beforeEach(beforeEach)
 
 export default router;
