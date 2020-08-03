@@ -37,10 +37,10 @@
                 编辑
               </el-button>
             </router-link>
-            <el-popover placement="bottom" v-model="visible">
+            <el-popover placement="bottom" v-model="row.visible">
               <p>是否要删除？</p>
               <div style="text-align: right; margin: 0">
-                <el-button size="mini" type="text" @click="handleDelete(0)">
+                <el-button size="mini" type="text" @click="row.visible = !row.visible">
                   取消
                 </el-button>
                 <el-button type="primary" size="mini" @click="handleDelete(row)" >
@@ -54,37 +54,58 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <pagination
+        :total="meta.total"
+        :page.sync="listQuery.page"
+        :perPage.sync="listQuery.per_page"
+        @pagination="getList"
+      />
     </el-col>
   </el-row>
 </template>
 
 <script>
+import { fetchList, destroy } from '@/api/admin-role'
+import Pagination from '@/components/Pagination'
+
 export default {
   data() {
     return {
       title: "系统管理 - 角色",
-      visible: false,
-      list: [
-        {
-          id: 1,
-          name: "技术部小菜鸟",
-          department: '技术部',
-          created_at: "2020-06-08",
-          updated_at: "2020-06-24"
-        }
-      ]
+      list: [],
+      meta: {},
+      listQuery: {
+        page: 1,
+        per_page: 20
+      }
     };
   },
+  components: { Pagination },
+  created () {
+    this.getList()
+  },
   methods: {
-    handleDelete(row) {
-      this.visible = !this.visible
+    getList() {
+      fetchList(this.listQuery)
+        .then(response => {
+          this.list = response.data
+          response.meta.per_page = parseInt(response.meta.per_page)
+          this.meta = response.meta
+        })
+    },
+    async handleDelete(row) {
+      row.visible = !row.visible
 
-      if (row !== 0) {
-        this.$notify.success({
-          title: '提醒',
-          message: '删除成功'
-        });
-      }
+      await destroy(row.id)
+        .then(response => {
+          this.$notify.success({
+            title: '提醒',
+            message: '删除成功'
+          });
+        })
+
+      this.getList()
     }
   }
 };

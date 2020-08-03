@@ -19,13 +19,12 @@
               <el-cascader
                 class="w-full"
                 placeholder="试试搜索：权限"
-                v-model="form.actions"
+                v-model="actions"
                 :options="routes"
                 :props="{
                   multiple: true,
-                  emitPath: false,
                   value: 'path',
-                  label: 'title'
+                  label: 'name'
                 }"
                 filterable
                 clearable
@@ -43,60 +42,90 @@
       <el-table :data="menus">
         <el-table-column property="action" label="操作权限">
           <template slot-scope="{row}">
-            <el-tag v-for="action in row.actions" :key="action.value" class="mr-2 mb-1">{{action.text}}</el-tag>
+            <el-tag
+              class="mr-2 mb-1"
+              v-for="action in row.actions"
+              :key="action.value"
+              :type="action.checked ? '' : 'info'"
+              @click="handleTag(action)"
+            >{{action.text}}</el-tag>
           </template>
         </el-table-column>
         <el-table-column property="path" label="path"></el-table-column>
-        <el-table-column property="title" label="菜单"></el-table-column>
+        <el-table-column property="name" label="菜单"></el-table-column>
       </el-table>
     </div>
   </div>
 </template>
 
 <script>
-import { isEmpty, findIndex, findLastIndex, startsWith } from 'lodash'
-import { childrenRoutes } from '@/router/index'
+import { compact, isEmpty, findIndex, findLastIndex, flattenDeep, uniq, startsWith } from 'lodash'
+import { tree } from '@/api/menu'
+import { fetchDetails } from '@/api/admin-permission'
 
 export default {
   data() {
     return {
-      form: {
-        name: "权限管理",
-        actions: []
-      },
-      value: '',
+      form: {},
       routes: [],
-      menus: []
+      menus: [],
+      actions: []
     };
   },
-  created() {
-    this.handleMenus()
+  async created() {
+    await this.menusTree()
+    let id = this.$route.params && this.$route.params.id
+    if (id > 0) {
+      this.getDetails(id)
+    }
   },
   methods: {
+    /**
+     * 详细信息
+     */
+    getDetails (id) {
+      fetchDetails(id).then(response => {
+        this.actions = this.flatActions(response.actions)
+        this.form = response
+        this.change(this.actions)
+      })
+    },
+    /**
+     * 获取树形结构菜单
+     */
+    menusTree () {
+      return tree().then(response => {
+        this.handleMenus(response)
+      })
+    },
     /**
      * 菜单栏处理
      */
     handleMenus(route = childrenRoutes, prefix = '', arr = []) {
-      route.forEach((item) => {
-        if (isEmpty(item.meta.actions)) {
-          let children = this.handleMenus(item.children, item.path + '/', [])
+      route.forEach(item => {
+        if (! isEmpty(item.children)) {
+          let children = this.handleMenus(item.children, item.path, [])
 
           let object = {
             path: item.path,
-            title: item.meta.title,
+            name: item.name,
             children
           }
 
           this.routes.push(object)
         } else {
+          item.operation.forEach(action => {
+            action.checked = false
+          })
+
           let object = {
-            path: prefix + item.path,
-            title: item.meta.title,
-            actions: item.meta.actions,
-            parent: prefix.substr(0, prefix.length - 1)
+            path: item.path,
+            name: item.name,
+            actions: item.operation,
+            parent: prefix
           }
 
-          if (item.meta.level === 1) {
+          if (item.parent_id === null) {
             // 一级菜单直接添加
             this.routes.push(object)
           } else {
@@ -112,78 +141,71 @@ export default {
     /**
      * 菜单选中
      */
-    change(arr) {
-      let nodesArr = this.$refs.changeMenu.getCheckedNodes();
-      let menus = this.menus
-      let nodes = []
-
-      arr.forEach((item, key) => {
-        let nodeIndex = findIndex(nodesArr, { "value" : item })
-
-        nodes.splice(key, 0, nodesArr[nodeIndex])
-      })
-
+    change(nodes) {
       if (isEmpty(nodes)) {
-        this.form.actions = [];
-        this.menus = [];
-        return ;
+        // 节点被清空
+        this.form.actions = []
+        this.menus = []
+        return
       }
 
-      // 添加节点数据
-      nodes.forEach( node => {
-        // 在当前菜单数据下『从右到左』查询是否存在本节点
-        let nodeIndex = findLastIndex(menus, value => {
-          return startsWith(value.path, node.value)
-        })
+      nodes.forEach(node => {
+        this.flatAddMenus(node)
+      })
 
-        if (isEmpty(node.parent)) {
-          // 没有父节点，并且在当前菜单数据下不存在本节点，则添加
+      let [...menuArr] =  this.menus;
+      let uniqueNodes = uniq(flattenDeep(nodes))
+      menuArr.forEach(item => {
+        let isInArray = uniqueNodes.includes(item.path)
 
-          if (nodeIndex === -1) menus.push(node.data)
-        } else {
-          // 在当前菜单数据下『从右到左』查询当前父节点下的最后一个节点的下标
-          let index = findLastIndex(menus, value => {
-            return startsWith(value.path, node.parent.value)
-          })
+        if (isInArray === false) {
+          let index = findIndex(this.menus, {'path': item.path})
+          this.menus.splice(index, 1)
+        }
+      })
+    },
+    /**
+     * 循环添加菜单
+     */
+    flatAddMenus(nodes) {
+      let parent = ''
+      nodes.forEach(node => {
+        let menuNodeIndex = findLastIndex(this.menus, { 'path': node })
 
-          if (index === -1) {
-            // 不存在父节点下的数据
-            // 直接添加父节点和本节点
-            menus.push(node.parent.data, node.data)
+        if (menuNodeIndex === -1) {
+          if (parent === '') {
+            let routeIndex = findIndex(this.routes, { 'path': node})
+            this.menus.push(this.routes[routeIndex])
           } else {
-            // 存在父节点
-            // 当前菜单数据下不存在本节点，则在父节点下最后一个节点后面添加本节点
+            let parentMenuNodeIndex = findLastIndex(this.menus, { 'path': parent })
+            let childrensMenus = this.menus[parentMenuNodeIndex].children
 
-            if (nodeIndex === -1) menus.splice(index + 1, 0, node.data)
-
+            let routeIndex = findIndex(childrensMenus, { 'path': node })
+            this.menus.splice(parentMenuNodeIndex + 1, 0, childrensMenus[routeIndex])
           }
+        }
+        parent = node
+      })
+    },
+    /**
+     * 标签选择
+     */
+    handleTag(action) {
+      action.checked = !action.checked
+    },
+    /**
+     * 递归获取操作菜单
+     */
+    flatActions(actions, prefix = '', arr = []) {
+      actions.forEach(item => {
+        if (isEmpty(item.children)) {
+          arr.push(compact([prefix, item.path]))
+        } else {
+          this.flatActions(item.children, item.path, arr)
         }
       })
 
-      // 寻找差异化节点，进行删除操作
-      // 复制菜单，避免循环时删除失效
-      let [...menuArr] =  menus;
-      menuArr.forEach( menu => {
-        // 获取菜单数据中的节点是否在所有选中的节点中
-        let index = findIndex(nodes, { "value" : menu.path })
-
-        if (index === -1) {
-          // 不是父节点，直接删除
-          if (isEmpty(menu.children)) {
-            let menuIndex = findIndex(menus, { "path" : menu.path })
-            menus.splice(menuIndex, 1)
-
-            let peerIndex = findIndex(menus, { "parent": menu.parent})
-
-            if (peerIndex === -1) {
-              // 没有同级菜单时，将父级菜单删除
-              let menuParentIndex = findIndex(menus, { "path": menu.parent })
-              menus.splice(menuParentIndex, 1)
-            }
-          }
-        }
-
-      })
+      return arr
     }
   }
 };
