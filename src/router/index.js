@@ -18,7 +18,13 @@ export const childrenRoutes = [
 
 const routes = [
   {
+    path: "/auth",
+    name: "auth.login",
+    component: () => import("@/views/auth/index")
+  },
+  {
     path: "/",
+    name: 'dashboard',
     component: Layout,
     children: childrenRoutes
   }
