@@ -5,7 +5,7 @@
         <div slot="header" class="clearfix">
           <el-row type="flex" align="middle">
             <el-col :span="12" class="text-left"><span>权限信息</span></el-col>
-            <el-col :span="12" class="text-right"><el-button type="primary">保存</el-button></el-col>
+            <el-col :span="12" class="text-right"><el-button type="primary" @click="onSubmit">保存</el-button></el-col>
           </el-row>
         </div>
         <el-row :gutter="30">
@@ -59,13 +59,15 @@
 </template>
 
 <script>
-import { compact, isEmpty, findIndex, findLastIndex, flattenDeep, uniq, startsWith } from 'lodash'
+import { cloneDeep, compact, isEmpty, findIndex, findLastIndex, flattenDeep, uniq, startsWith } from 'lodash'
 import { tree } from '@/api/menu'
-import { fetchDetails } from '@/api/admin-permission'
+import { fetchDetails, update } from '@/api/admin-permission'
 
 export default {
+  inject:['reload'],
   data() {
     return {
+      id: 0,
       form: {},
       routes: [],
       menus: [],
@@ -85,6 +87,7 @@ export default {
      */
     getDetails (id) {
       fetchDetails(id).then(response => {
+        this.id = id
         this.actions = this.flatActions(response.actions)
         this.form = response
         this.change(this.actions)
@@ -169,13 +172,22 @@ export default {
      */
     flatAddMenus(nodes) {
       let parent = ''
+      let formActions = cloneDeep(this.form.actions)
       nodes.forEach(node => {
         let menuNodeIndex = findLastIndex(this.menus, { 'path': node })
 
         if (menuNodeIndex === -1) {
           if (parent === '') {
             let routeIndex = findIndex(this.routes, { 'path': node})
-            this.menus.push(this.routes[routeIndex])
+            let menu = cloneDeep(this.routes[routeIndex])
+            if (!isEmpty(menu.actions)) {
+              menu.actions = menu.actions.map(action => {
+                let actionsIndex = findIndex(formActions, {'path': node})
+                action.checked = formActions[actionsIndex].actions.includes(action.value)
+                return action
+              })
+            }
+            this.menus.push(menu)
           } else {
             let parentMenuNodeIndex = findLastIndex(this.menus, { 'path': parent })
             let childrensMenus = this.menus[parentMenuNodeIndex].children
@@ -206,6 +218,54 @@ export default {
       })
 
       return arr
+    },
+    /**
+     * 提交表单
+     */
+    onSubmit() {
+      let actions = []
+      let menus = cloneDeep(this.menus)
+
+      menus.forEach(item => {
+        if (item.parent === undefined) return ;
+        let arr = [];
+
+        if (item.parent === '') {
+          item.actions.forEach(action => {
+            if (action.checked) arr.push(action.value)
+          })
+
+          item.actions = arr;
+          actions.push(item)
+        } else {
+          let parentIndex = findIndex(actions, {'path' : item.parent})
+          if (parentIndex === -1) {
+            let parentIndex = findIndex(menus, {'path': item.parent})
+            let parent = cloneDeep(menus[parentIndex])
+            parent.children = [];
+            item.actions.forEach(action => {
+              if (action.checked) arr.push(action.value)
+            })
+            item.actions = arr;
+            parent.children.push(item)
+            actions.push(parent)
+          } else {
+            item.actions.forEach(action => {
+              if (action.checked) arr.push(action.value)
+            })
+
+            item.actions = arr;
+            actions[parentIndex].children.push(item)
+          }
+        }
+      })
+
+      this.form.actions = actions
+
+      update(this.id, this.form).then(response => {
+        this.$message.success("操作成功~");
+        this.reload();
+      })
     }
   }
 };
