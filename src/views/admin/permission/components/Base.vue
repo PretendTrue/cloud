@@ -61,7 +61,7 @@
 <script>
 import { cloneDeep, compact, isEmpty, findIndex, findLastIndex, flattenDeep, uniq, startsWith } from 'lodash'
 import { tree } from '@/api/menu'
-import { fetchDetails, update } from '@/api/admin-permission'
+import { fetchDetails, store, update } from '@/api/admin-permission'
 
 export default {
   inject:['reload'],
@@ -183,7 +183,7 @@ export default {
             if (!isEmpty(menu.actions)) {
               menu.actions = menu.actions.map(action => {
                 let actionsIndex = findIndex(formActions, {'path': node})
-                action.checked = formActions[actionsIndex].actions.includes(action.value)
+                action.checked = actionsIndex === -1 ? false : formActions[actionsIndex].actions.includes(action.value)
                 return action
               })
             }
@@ -193,7 +193,19 @@ export default {
             let childrensMenus = this.menus[parentMenuNodeIndex].children
 
             let routeIndex = findIndex(childrensMenus, { 'path': node })
-            this.menus.splice(parentMenuNodeIndex + 1, 0, childrensMenus[routeIndex])
+            let menu = cloneDeep(childrensMenus[routeIndex])
+
+            if (!isEmpty(menu.actions)) {
+              menu.actions = menu.actions.map(action => {
+                let parentMenu = findIndex(formActions, {'path': parent})
+                if (parentMenu === -1) return action
+                let childrensMenuIndex = findIndex(formActions[parentMenu].children, { 'path': node})
+                action.checked = childrensMenuIndex === -1 ? false : formActions[parentMenu].children[childrensMenuIndex].actions.includes(action.value)
+                return action
+              })
+            }
+
+            this.menus.splice(parentMenuNodeIndex + 1, 0, menu)
           }
         }
         parent = node
@@ -262,10 +274,23 @@ export default {
 
       this.form.actions = actions
 
-      update(this.id, this.form).then(response => {
-        this.$message.success("操作成功~");
-        this.reload();
-      })
+      if (this.id > 0) {
+        update(this.id, this.form).then(response => {
+          this.$notify.success({
+            title: '提醒',
+            message: '更新成功'
+          });
+          this.reload();
+        })
+      } else {
+        store(this.form).then(response => {
+          this.$notify.success({
+            title: '提醒',
+            message: '添加成功'
+          });
+          this.$router.push({name: 'admin.permission.edit', params: { id: response.id }})
+        })
+      }
     }
   }
 };
