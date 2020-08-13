@@ -24,6 +24,7 @@
 import { fetchDetails, store, update } from '@/api/admin-department'
 
 export default {
+  inject:['reload'],
   data() {
     return {
       id: 0,
