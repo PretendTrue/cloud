@@ -11,7 +11,7 @@ const serve = axios.create({
 serve.interceptors.request.use(
   async config => {
     if (isEmpty(config.headers.common.Authorization)) {
-      config.headers['Authorization'] = 'Bearer' + await locaforage.getItem('token')
+      config.headers['Authorization'] = 'Bearer ' + await locaforage.getItem('token')
     }
     return config
   },
