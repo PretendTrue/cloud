@@ -12,7 +12,7 @@
           <el-row :gutter="30">
             <el-col :xs="24" :sm="12" :lg="6" :span="4">
               <el-form-item label="用户名">
-                <el-input v-model="form.username"></el-input>
+                <el-input v-model="form.name"></el-input>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :lg="6" :span="4">
@@ -22,9 +22,9 @@
             </el-col>
           </el-row>
           <el-row :gutter="30">
-            <el-col :xs="24" :sm="12" :lg="6" :span="4">
+            <el-col :xs="24" :sm="8" :lg="6" :span="4">
               <el-form-item label="所属部门">
-                <el-select class="w-full" v-model="form.department" placeholder="请选择">
+                <el-select class="w-full" v-model="form.departments" multiple placeholder="请选择">
                   <el-option
                     v-for="department in departments"
                     :key="department.id"
@@ -34,9 +34,9 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :xs="24" :sm="12" :lg="6" :span="4">
+            <el-col :xs="24" :sm="8" :lg="6" :span="4">
               <el-form-item label="角色">
-                <el-select class="w-full" v-model="form.role" placeholder="请选择">
+                <el-select class="w-full" v-model="form.roles" multiple placeholder="请选择">
                   <el-option
                     v-for="role in roles"
                     :key="role.id"
@@ -46,14 +46,21 @@
                 </el-select>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-divider content-position="left">修改密码</el-divider>
-          <el-row :gutter="30">
-            <el-col :xs="24" :sm="24" :lg="6" :span="4">
-              <el-form-item label="旧密码">
-                <el-input v-model="form.password" show-password></el-input>
+            <el-col :xs="24" :sm="8" :lg="6" :span="4">
+              <el-form-item label="特殊权限">
+                <el-select class="w-full" v-model="form.permissions" multiple placeholder="请选择">
+                  <el-option
+                    v-for="permission in permissions"
+                    :key="permission.id"
+                    :label="permission.name"
+                    :value="permission.id">
+                  </el-option>
+                </el-select>
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-divider content-position="left">用户密码</el-divider>
+          <el-row :gutter="30">
             <el-col :xs="24" :sm="12" :lg="6" :span="4">
               <el-form-item label="新密码">
                 <el-input v-model="form.password" show-password></el-input>
@@ -61,12 +68,12 @@
             </el-col>
             <el-col :xs="24" :sm="12" :lg="6" :span="4">
               <el-form-item label="确认密码">
-                <el-input v-model="form.password" show-password></el-input>
+                <el-input v-model="form.password_confirmation" show-password></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-form-item>
-            <el-button type="primary">保存</el-button>
+            <el-button type="primary" @click="onSubmit">保存</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -75,36 +82,86 @@
 </template>
 
 <script>
-import avatar from '@/assets/avatar.png'
+import { fetchDetails, store, update } from '@/api/admin-user'
+import { fetchList as departments } from '@/api/admin-department'
+import { fetchList as roles } from '@/api/admin-role'
+import { fetchList as permissions } from '@/api/admin-permission'
 
 export default {
+  inject:['reload'],
   data() {
     return {
-      form: {
-        avatar: avatar,
-        username: "Administrator",
-        email: "admin@example.com",
-        password: "secret",
-        department: '',
-        role: ''
-      },
-      departments: [
-        {
-          id: 1,
-          name: '销售部'
-        },
-        {
-          id: 2,
-          name: '技术部'
-        }
-      ],
-      roles: [
-        {
-          id: 1,
-          name: '技术部小菜鸟'
-        }
-      ]
+      form: {},
+      departments: [],
+      roles: [],
+      permissions: []
     };
+  },
+  created() {
+    this.fetchDepartments()
+    this.fetchRoles()
+    this.fetchPermissions()
+    let id = this.$route.params && this.$route.params.id
+    if (id > 0) {
+      this.getDetails(id)
+    }
+  },
+  methods: {
+    /**
+     * 详细信息
+     */
+    getDetails (id) {
+      fetchDetails(id).then(response => {
+        this.id = id
+        this.form = response
+      })
+    },
+    /**
+     * 获取部门列表
+     */
+    fetchDepartments() {
+      departments().then(response => {
+        this.departments = response
+      })
+    },
+    /**
+     * 获取角色列表
+     */
+    fetchRoles() {
+      roles().then(response => {
+        this.roles = response
+      })
+    },
+    /**
+     * 获取权限列表
+     */
+    fetchPermissions() {
+      permissions().then(response => {
+        this.permissions = response
+      })
+    },
+    /**
+     * 提交表单
+     */
+    onSubmit() {
+      if (this.id > 0) {
+        update(this.id, this.form).then(response => {
+          this.$notify.success({
+            title: '提醒',
+            message: '更新成功'
+          });
+          this.reload();
+        })
+      } else {
+        store(this.form).then(response => {
+          this.$notify.success({
+            title: '提醒',
+            message: '添加成功'
+          });
+          this.$router.push({name: 'admin.user.edit', params: { id: response.id }})
+        })
+      }
+    }
   }
 };
 </script>
