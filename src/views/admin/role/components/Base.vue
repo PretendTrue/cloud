@@ -16,14 +16,23 @@
           </el-col>
           <el-col :xs="24" :sm="12" :lg="6" :span="4">
             <el-form-item label="角色权限">
-              <el-select class="w-full" v-model="form.permissions" multiple placeholder="请选择">
-                <el-option
-                  v-for="permission in permissions"
-                  :key="permission.id"
-                  :label="permission.name"
-                  :value="permission.id">
-                </el-option>
-              </el-select>
+              <el-cascader
+                class="w-full"
+                placeholder="试试搜索：权限"
+                v-model="form.permissions"
+                :options="menus"
+                :props="{
+                  multiple: true,
+                  value: 'action',
+                  label: 'name',
+                  children: 'operation'
+                }"
+                filterable
+                clearable
+                collapse-tags
+                @change="changePermission"
+              >
+              </el-cascader>
             </el-form-item>
           </el-col>
         </el-row>
@@ -34,7 +43,8 @@
 
 <script>
 import { fetchDetails, store, update } from '@/api/admin-role'
-import { fetchList as permissions } from '@/api/admin-permission'
+import { fetchList as fetchMenuList } from '@/api/menu'
+import { forEach } from 'lodash'
 
 export default {
   inject:['reload'],
@@ -45,12 +55,13 @@ export default {
         name: '',
         permissions: []
       },
-      permissions: []
+      menus: [],
+      permissionsTabel: []
     };
   },
   created() {
     let id = this.$route.params && this.$route.params.id
-    this.fetchPermissions()
+    this.getMenus()
     if (id > 0) {
       this.getDetails(id)
     }
@@ -62,23 +73,56 @@ export default {
     getDetails (id) {
       fetchDetails(id).then(response => {
         this.id = id
+        response.permissions = this.handlePermissions(response.permissions)
         this.form = response
       })
     },
     /**
-     * 获取权限列表
+     * 获取菜单列表
      */
-    fetchPermissions() {
-      permissions().then(response => {
-        this.permissions = response
+    getMenus() {
+      fetchMenuList().then(response => {
+        this.menus = response
       })
+    },
+    changePermission(node) {
+      console.info(node)
+    },
+    /**
+     * 处理获取的权限
+     */
+    handlePermissions(arr, permissions = []) {
+      forEach(arr, (item, key) => {
+        forEach(item, (value) => {
+          let permission = [key, value]
+          permissions.push(permission)
+        })
+      })
+
+      return permissions
+    },
+    /**
+     * 修改提交时的权限
+     */
+    handleSubmitPermissions(arr, permissions = {}) {
+      forEach(arr, (item) => {
+        console.info(arr)
+        if (permissions[item[0]]) {
+          permissions[item[0]].push(item[1])
+        } else {
+          permissions[item[0]] = [ item[1]]
+        }
+      })
+
+      return permissions
     },
     /**
      * 提交表单
      */
     onSubmit() {
+      this.form.permissions = this.handleSubmitPermissions(this.form.permissions)
       if (this.id > 0) {
-        update(this.id, this.form).then(response => {
+        update(this.id, this.form).then(() => {
           this.$notify.success({
             title: '提醒',
             message: '更新成功'
