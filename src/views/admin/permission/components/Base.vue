@@ -60,7 +60,7 @@
 
 <script>
 import { cloneDeep, compact, isEmpty, findIndex, findLastIndex, flattenDeep, uniq, startsWith } from 'lodash'
-import { tree } from '@/api/menu'
+import { fetchList } from '@/api/menu'
 import { fetchDetails, store, update } from '@/api/admin-permission'
 
 export default {
