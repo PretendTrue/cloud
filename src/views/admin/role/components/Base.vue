@@ -108,19 +108,17 @@ export default {
       node = this.handleSubmitPermissions(node)
 
       let permissions = [];
-      forEach(node, (item, key) => {
+      forEach(node, item => {
         let permission = {};
-        let menu = this.menus.find(menu => {
-          return menu.action == key
-        })
+        let menu = this.menus.find(menu => menu.action == item.path)
         if (menu === undefined) return ;
 
         permission.name = menu.name;
-        permission.action = menu.action;
+        permission.actions = menu.actions;
         permission.operation = [];
 
         forEach(menu.operation, value => {
-          if (item.includes(value.action)) {
+          if (item.actions.includes(value.action)) {
             permission.operation.push(value)
           }
         })
@@ -133,10 +131,12 @@ export default {
     /**
      * 处理获取的权限
      */
-    handlePermissions(arr, permissions = []) {
-      forEach(arr, (item, key) => {
-        forEach(item, (value) => {
-          let permission = [key, value]
+    handlePermissions(arr) {
+      let permissions = []
+
+      forEach(arr, item => {
+        forEach(item.actions, value => {
+          let permission = [item.path, value]
           permissions.push(permission)
         })
       })
@@ -146,12 +146,17 @@ export default {
     /**
      * 修改提交时的权限
      */
-    handleSubmitPermissions(arr, permissions = {}) {
+    handleSubmitPermissions(arr) {
+      let permissions = []
       forEach(arr, (item) => {
-        if (permissions[item[0]]) {
-          permissions[item[0]].push(item[1])
+        let permissionIndex = permissions.findIndex(value => value.path === item[0]);
+        if (permissionIndex !== -1) {
+          permissions[permissionIndex].actions.push(item[1])
         } else {
-          permissions[item[0]] = [ item[1]]
+          let permission = {};
+          permission.path = item[0]
+          permission.actions = [item[1]]
+          permissions.push(permission)
         }
       })
 
