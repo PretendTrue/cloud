@@ -24,7 +24,7 @@
           <el-row :gutter="30">
             <el-col :xs="24" :sm="8" :lg="6" :span="4">
               <el-form-item label="所属部门">
-                <el-select class="w-full" v-model="form.departments" multiple placeholder="请选择">
+                <el-select class="w-full" v-model="form.department_id" placeholder="请选择">
                   <el-option
                     v-for="department in departments"
                     :key="department.id"

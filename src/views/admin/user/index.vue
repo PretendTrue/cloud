@@ -23,7 +23,7 @@
         </el-table-column>
         <el-table-column prop="name" label="用户名"></el-table-column>
         <el-table-column prop="email" label="邮箱"></el-table-column>
-        <el-table-column prop="department" label="所属部门"></el-table-column>
+        <el-table-column prop="department.name" label="所属部门"></el-table-column>
         <el-table-column prop="role" label="角色"></el-table-column>
         <el-table-column label="上次登录日期" width="200" align="center">
           <template slot-scope="{row}">
