@@ -6,17 +6,17 @@ export default [
   },
   {
     title: "客户管理",
-    path: "/customers",
+    path: "customers",
     icon: "el-icon-data-line"
   },
   {
     title: "厂家管理",
-    path: "/manufacturers",
+    path: "manufacturers",
     icon: "el-icon-data-line"
   },
   {
     title: "产品",
-    path: "/products",
+    path: "products",
     icon: "el-icon-data-line",
     children: [
       {
@@ -38,7 +38,7 @@ export default [
   },
   {
     title: "系统管理",
-    path: "/admin",
+    path: "admin",
     icon: "el-icon-setting",
     children: [
       {

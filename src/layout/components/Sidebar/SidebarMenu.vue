@@ -9,14 +9,51 @@
 <script>
 import routes from "./menu";
 import SidebarItem from "./SidebarItem";
+import localforage from "localforage";
+import { compact, forEach, isEmpty } from 'lodash';
 
 export default {
   components: {
     SidebarItem
   },
-  computed: {
-    routes() {
-      return routes;
+  asyncComputed: {
+    async routes() {
+      let permissions = await localforage.getItem('permissions')
+      let menus = [];
+      forEach(permissions, permission => {
+        // 路由权限分割成数组格式 ['admin', 'user']
+        let path = compact(permission.name.split('/'))
+        let menu = {}
+        let childrens = [];
+        forEach(path, item => {
+          if (isEmpty(menu)) {
+            let route = routes.find(route => route.path === item)
+            if (! isEmpty(route.children)) childrens = route.children
+
+            // 从菜单列表中查询是否存在父级菜单
+            let parentMenuIndex = menus.findIndex(parentMenu => parentMenu.path === item)
+
+            if (parentMenuIndex !== -1) {
+              menu = menus[parentMenuIndex];
+              menus.splice(parentMenuIndex, 1);
+            } else {
+              menu.title = route.title
+              menu.path = route.path
+              menu.icon = route.icon
+
+              if (! isEmpty(route.children)) menu.children = []
+            }
+          } else {
+            let childrenMenu = childrens.find(children => children.path === item)
+
+            if (!isEmpty(childrenMenu)) menu.children.push(childrenMenu)
+          }
+        })
+
+        menus.push(menu)
+      })
+
+      return menus
     },
     activeMenu() {
       const route = this.$route;

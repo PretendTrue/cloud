@@ -19,3 +19,7 @@ export function update (id, params) {
 export function destroy (id) {
   return axios.delete(`/users/${id}`)
 }
+
+export function permissions() {
+  return axios.get('users/permissions')
+}

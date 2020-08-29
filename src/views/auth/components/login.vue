@@ -30,6 +30,7 @@
 <script>
 import localforage from "localforage";
 import { login, me } from "@/api/auth";
+import { permissions } from '@/api/admin-user'
 
 export default {
   data() {
@@ -78,6 +79,10 @@ export default {
       await me().then(user => {
         localforage.setItem("user", user);
       });
+
+      await permissions().then(permissions => {
+        localforage.setItem('permissions', permissions)
+      })
 
       this.$message.success("登录成功~");
       this.$router.push({ name: "dashboard" });
