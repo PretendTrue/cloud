@@ -38,6 +38,21 @@
         </el-row>
       </el-card>
     </el-form>
+    <div class="custom-table mt-8">
+      <el-table :data="permissionsTabel">
+        <el-table-column property="action" label="操作权限">
+          <template slot-scope="{row}">
+            <el-tag
+              class="mr-2 mb-1"
+              v-for="operation in row.operation"
+              :key="operation.action"
+            >{{operation.name}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column property="action" label="action"></el-table-column>
+        <el-table-column property="name" label="菜单"></el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
@@ -74,6 +89,7 @@ export default {
       fetchDetails(id).then(response => {
         this.id = id
         response.permissions = this.handlePermissions(response.permissions)
+        this.changePermission(response.permissions)
         this.form = response
       })
     },
@@ -85,8 +101,34 @@ export default {
         this.menus = response
       })
     },
+    /**
+     * 角色权限选中操作
+     */
     changePermission(node) {
-      console.info(node)
+      node = this.handleSubmitPermissions(node)
+
+      let permissions = [];
+      forEach(node, (item, key) => {
+        let permission = {};
+        let menu = this.menus.find(menu => {
+          return menu.action == key
+        })
+        if (menu === undefined) return ;
+
+        permission.name = menu.name;
+        permission.action = menu.action;
+        permission.operation = [];
+
+        forEach(menu.operation, value => {
+          if (item.includes(value.action)) {
+            permission.operation.push(value)
+          }
+        })
+
+        permissions.push(permission)
+      })
+
+      this.permissionsTabel = permissions
     },
     /**
      * 处理获取的权限
@@ -106,7 +148,6 @@ export default {
      */
     handleSubmitPermissions(arr, permissions = {}) {
       forEach(arr, (item) => {
-        console.info(arr)
         if (permissions[item[0]]) {
           permissions[item[0]].push(item[1])
         } else {
