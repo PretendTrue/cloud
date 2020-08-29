@@ -17,13 +17,13 @@
     <el-col class="custom-table">
       <el-table :data="list">
         <el-table-column prop="name" label="部门名称"></el-table-column>
-        <el-table-column label="修改日期" width="180" align="center">
+        <el-table-column label="修改日期" width="200" align="center">
           <template slot-scope="{row}">
             <i class="el-icon-time"></i>
             <span style="margin-left: 0.625rem">{{ row.updated_at }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="创建日期" width="180" align="center">
+        <el-table-column label="创建日期" width="200" align="center">
           <template slot-scope="{row}">
             <i class="el-icon-time"></i>
             <span style="margin-left: 0.625rem">{{ row.created_at }}</span>

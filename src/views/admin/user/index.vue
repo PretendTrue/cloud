@@ -25,13 +25,13 @@
         <el-table-column prop="email" label="邮箱"></el-table-column>
         <el-table-column prop="department" label="所属部门"></el-table-column>
         <el-table-column prop="role" label="角色"></el-table-column>
-        <el-table-column label="上次登录日期" width="180" align="center">
+        <el-table-column label="上次登录日期" width="200" align="center">
           <template slot-scope="{row}">
             <i class="el-icon-time"></i>
             <span style="margin-left: 0.625rem">{{ row.last_actived_at }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="创建日期" width="180" align="center">
+        <el-table-column label="创建日期" width="200" align="center">
           <template slot-scope="{row}">
             <i class="el-icon-time"></i>
             <span style="margin-left: 0.625rem">{{ row.created_at }}</span>
