@@ -46,18 +46,6 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :xs="24" :sm="8" :lg="6" :span="4">
-              <el-form-item label="特殊权限">
-                <el-select class="w-full" v-model="form.permissions" multiple placeholder="请选择">
-                  <el-option
-                    v-for="permission in permissions"
-                    :key="permission.id"
-                    :label="permission.name"
-                    :value="permission.id">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
           </el-row>
           <el-divider content-position="left">用户密码</el-divider>
           <el-row :gutter="30">
@@ -85,7 +73,6 @@
 import { fetchDetails, store, update } from '@/api/admin-user'
 import { fetchList as departments } from '@/api/admin-department'
 import { fetchList as roles } from '@/api/admin-role'
-import { fetchList as permissions } from '@/api/admin-permission'
 
 export default {
   inject:['reload'],
@@ -93,14 +80,12 @@ export default {
     return {
       form: {},
       departments: [],
-      roles: [],
-      permissions: []
+      roles: []
     };
   },
   created() {
     this.fetchDepartments()
     this.fetchRoles()
-    this.fetchPermissions()
     let id = this.$route.params && this.$route.params.id
     if (id > 0) {
       this.getDetails(id)
@@ -130,14 +115,6 @@ export default {
     fetchRoles() {
       roles().then(response => {
         this.roles = response
-      })
-    },
-    /**
-     * 获取权限列表
-     */
-    fetchPermissions() {
-      permissions().then(response => {
-        this.permissions = response
       })
     },
     /**

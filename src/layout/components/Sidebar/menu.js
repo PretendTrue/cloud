@@ -55,11 +55,6 @@ export default [
         title: "部门",
         path: "departments",
         icon: "el-icon-stopwatch",
-      },
-      {
-        title: "权限",
-        path: "permissions",
-        icon: "el-icon-stopwatch",
       }
     ]
   }

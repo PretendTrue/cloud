@@ -160,58 +160,6 @@ const admin = {
           }
         ]
       }
-    },
-    {
-      path: "permissions",
-      component: App,
-      children: [
-        {
-          path: "",
-          name: "admin.permission",
-          component: () => import("@/views/admin/permission/index")
-        },
-        {
-          path: "create",
-          name: "admin.permission.create",
-          component: () => import("@/views/admin/permission/create"),
-          meta: {
-              activeMenu: '/admin/permissions'
-          }
-        },
-        {
-          path: ":id(\\d+)/edit",
-          name: "admin.permission.edit",
-          component: () => import("@/views/admin/permission/edit"),
-          meta: {
-              activeMenu: '/admin/permissions'
-          }
-        }
-      ],
-      meta: {
-        title: '权限',
-        actions: [
-          {
-            value: 'list',
-            text: '列表'
-          },
-          {
-            value: 'show',
-            text: '详情'
-          },
-          {
-            value: 'create',
-            text: '添加'
-          },
-          {
-            value: 'edit',
-            text: '修改'
-          },
-          {
-            value: 'delete',
-            text: '删除'
-          }
-        ]
-      }
     }
   ],
   meta: {
