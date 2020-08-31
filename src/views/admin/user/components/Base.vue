@@ -36,7 +36,12 @@
             </el-col>
             <el-col :xs="24" :sm="8" :lg="6" :span="4">
               <el-form-item label="角色">
-                <el-select class="w-full" v-model="form.roles" multiple placeholder="请选择">
+                <el-select
+                 class="w-full"
+                 v-model="form.roles"
+                 multiple
+                 clearable
+                 placeholder="请选择">
                   <el-option
                     v-for="role in roles"
                     :key="role.id"
@@ -98,6 +103,7 @@ export default {
     getDetails (id) {
       fetchDetails(id).then(response => {
         this.id = id
+        response.roles = response.roles.map(role => role.id)
         this.form = response
       })
     },
