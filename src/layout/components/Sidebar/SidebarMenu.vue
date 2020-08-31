@@ -7,10 +7,10 @@
 </template>
 
 <script>
-import routes from "./menu";
+import { constantMenus, asyncMenus } from "./menu";
 import SidebarItem from "./SidebarItem";
 import localforage from "localforage";
-import { compact, forEach, isEmpty } from 'lodash';
+import { compact, forEach, isEmpty, orderBy } from 'lodash';
 
 export default {
   components: {
@@ -19,7 +19,7 @@ export default {
   asyncComputed: {
     async routes() {
       let permissions = await localforage.getItem('permissions')
-      let menus = [];
+      let menus = [... constantMenus];
       forEach(permissions, permission => {
         // 路由权限分割成数组格式 ['admin', 'user']
         let path = compact(permission.name.split('/'))
@@ -27,7 +27,7 @@ export default {
         let childrens = [];
         forEach(path, item => {
           if (isEmpty(menu)) {
-            let route = routes.find(route => route.path === item)
+            let route = asyncMenus.find(route => route.path === item)
             if (! isEmpty(route.children)) childrens = route.children
 
             // 从菜单列表中查询是否存在父级菜单
@@ -40,6 +40,7 @@ export default {
               menu.title = route.title
               menu.path = route.path
               menu.icon = route.icon
+              menu.serial_number = route.serial_number
 
               if (! isEmpty(route.children)) menu.children = []
             }
@@ -50,10 +51,12 @@ export default {
           }
         })
 
+        if (! isEmpty(menu.children)) menu.children = orderBy(menu.children, 'serial_number')
+
         menus.push(menu)
       })
 
-      return menus
+      return orderBy(menus, 'serial_number')
     },
     activeMenu() {
       const route = this.$route;
