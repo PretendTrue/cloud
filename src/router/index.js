@@ -20,7 +20,28 @@ const constantRoutes = [
     path: "/",
     name: 'dashboard',
     component: Layout
-  }
+  },
+  {
+    path: '/404',
+    component: Layout,
+    children: [
+      {
+        path: "",
+        component: () => import('@/views/error-page/404')
+      }
+    ]
+  },
+  {
+    path: '/401',
+    component: Layout,
+    children: [
+      {
+        path: "",
+        component: () => import('@/views/error-page/401')
+      }
+    ]
+  },
+  { path: '*', redirect: '/404' }
 ];
 
 export const asyncRoutes = [
