@@ -1,20 +1,27 @@
-import App from '@/App'
+import Layout from '@/layout'
 
 const manufacturer = {
   path: "/manufacturers",
-  component: App,
+  component: Layout,
+  meta: {
+    title: '厂家管理'
+  },
   children: [
     {
       path: "",
       name: "manufacturer",
-      component: () => import("@/views/manufacturer/index")
+      component: () => import("@/views/manufacturer/index"),
+      meta: {
+          actions: 'list'
+      }
     },
     {
       path: "create",
       name: "manufacturer.create",
       component: () => import("@/views/manufacturer/create"),
       meta: {
-          activeMenu: '/manufacturers'
+          activeMenu: '/manufacturers',
+          actions: 'create'
       }
     },
     {
@@ -22,36 +29,11 @@ const manufacturer = {
       name: "manufacturer.edit",
       component: () => import("@/views/manufacturer/edit"),
       meta: {
-          activeMenu: '/manufacturers'
+          activeMenu: '/manufacturers',
+          actions: 'edit'
       }
     }
-  ],
-  meta: {
-    title: '厂家管理',
-    level: 1,
-    actions: [
-      {
-        value: 'list',
-        text: '列表'
-      },
-      {
-        value: 'show',
-        text: '详情'
-      },
-      {
-        value: 'create',
-        text: '添加'
-      },
-      {
-        value: 'edit',
-        text: '修改'
-      },
-      {
-        value: 'delete',
-        text: '删除'
-      }
-    ]
-  }
+  ]
 }
 
 export default manufacturer

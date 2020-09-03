@@ -1,25 +1,36 @@
 import App from '@/App'
+import Layout from '@/layout'
 
 const admin = {
   path: "/admin",
   redirect: '/admin/users',
-  component: App,
+  component: Layout,
+  meta: {
+    title: '系统管理'
+  },
   children: [
     {
       path: "users",
       component: App,
+      meta: {
+        title: '管理员'
+      },
       children: [
         {
           path: "",
           name: "admin.user",
-          component: () => import("@/views/admin/user/index")
+          component: () => import("@/views/admin/user/index"),
+          meta: {
+            actions: 'list'
+          }
         },
         {
           path: "create",
           name: "admin.user.create",
           component: () => import("@/views/admin/user/create"),
           meta: {
-              activeMenu: '/admin/users'
+              activeMenu: '/admin/users',
+              actions: 'create'
           }
         },
         {
@@ -27,51 +38,34 @@ const admin = {
           name: "admin.user.edit",
           component: () => import("@/views/admin/user/edit"),
           meta: {
-              activeMenu: '/admin/users'
+              activeMenu: '/admin/users',
+              actions: 'edit'
           }
         }
-      ],
-      meta: {
-        title: '管理员',
-        actions: [
-          {
-            value: 'list',
-            text: '列表'
-          },
-          {
-            value: 'show',
-            text: '详情'
-          },
-          {
-            value: 'create',
-            text: '添加'
-          },
-          {
-            value: 'edit',
-            text: '修改'
-          },
-          {
-            value: 'delete',
-            text: '删除'
-          }
-        ]
-      }
+      ]
     },
     {
       path: "roles",
       component: App,
+      meta: {
+        title: '角色'
+      },
       children: [
         {
           path: "",
           name: "admin.role",
-          component: () => import("@/views/admin/role/index")
+          component: () => import("@/views/admin/role/index"),
+          meta: {
+              actions: 'list'
+          }
         },
         {
           path: "create",
           name: "admin.role.create",
           component: () => import("@/views/admin/role/create"),
           meta: {
-              activeMenu: '/admin/roles'
+              activeMenu: '/admin/roles',
+              actions: 'create'
           }
         },
         {
@@ -79,51 +73,34 @@ const admin = {
           name: "admin.role.edit",
           component: () => import("@/views/admin/role/edit"),
           meta: {
-              activeMenu: '/admin/roles'
+              activeMenu: '/admin/roles',
+              actions: 'edit'
           }
         }
-      ],
-      meta: {
-        title: '角色',
-        actions: [
-          {
-            value: 'list',
-            text: '列表'
-          },
-          {
-            value: 'show',
-            text: '详情'
-          },
-          {
-            value: 'create',
-            text: '添加'
-          },
-          {
-            value: 'edit',
-            text: '修改'
-          },
-          {
-            value: 'delete',
-            text: '删除'
-          }
-        ]
-      }
+      ]
     },
     {
       path: "departments",
       component: App,
+      meta: {
+        title: '部门'
+      },
       children: [
         {
           path: "",
           name: "admin.department",
-          component: () => import("@/views/admin/department/index")
+          component: () => import("@/views/admin/department/index"),
+          meta: {
+              actions: 'list'
+          }
         },
         {
           path: "create",
           name: "admin.department.create",
           component: () => import("@/views/admin/department/create"),
           meta: {
-              activeMenu: '/admin/departments'
+              activeMenu: '/admin/departments',
+              actions: 'create'
           }
         },
         {
@@ -131,40 +108,13 @@ const admin = {
           name: "admin.department.edit",
           component: () => import("@/views/admin/department/edit"),
           meta: {
-              activeMenu: '/admin/departments'
+              activeMenu: '/admin/departments',
+              actions: 'edit'
           }
         }
-      ],
-      meta: {
-        title: '部门',
-        actions: [
-          {
-            value: 'list',
-            text: '列表'
-          },
-          {
-            value: 'show',
-            text: '详情'
-          },
-          {
-            value: 'create',
-            text: '添加'
-          },
-          {
-            value: 'edit',
-            text: '修改'
-          },
-          {
-            value: 'delete',
-            text: '删除'
-          }
-        ]
-      }
+      ]
     }
-  ],
-  meta: {
-    title: '系统管理'
-  }
+  ]
 }
 
 export default admin

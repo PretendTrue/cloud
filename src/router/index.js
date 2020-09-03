@@ -10,14 +10,7 @@ import product from './modules/product'
 
 Vue.use(VueRouter);
 
-export const childrenRoutes = [
-  admin,
-  customer,
-  manufacturer,
-  product,
-]
-
-const routes = [
+const constantRoutes = [
   {
     path: "/auth",
     name: "auth.login",
@@ -26,14 +19,20 @@ const routes = [
   {
     path: "/",
     name: 'dashboard',
-    component: Layout,
-    children: childrenRoutes
+    component: Layout
   }
 ];
 
+export const asyncRoutes = [
+  admin,
+  customer,
+  manufacturer,
+  product
+]
+
 const router = new VueRouter({
   mode: "history",
-  routes
+  routes: constantRoutes
 });
 
 router.beforeEach(beforeEach)

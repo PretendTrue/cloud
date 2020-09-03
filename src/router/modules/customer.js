@@ -1,20 +1,27 @@
-import App from '@/App'
+import Layout from '@/layout'
 
 const customer = {
   path: "/customers",
-  component: App,
+  component: Layout,
+  meta: {
+    title: '客户管理'
+  },
   children: [
     {
       path: "",
       name: "customer",
-      component: () => import("@/views/customer/index")
+      component: () => import("@/views/customer/index"),
+      meta: {
+          actions: 'list'
+      }
     },
     {
       path: "create",
       name: "customer.create",
       component: () => import("@/views/customer/create"),
       meta: {
-          activeMenu: '/customers'
+          activeMenu: '/customers',
+          actions: 'create'
       }
     },
     {
@@ -22,36 +29,11 @@ const customer = {
       name: "customer.edit",
       component: () => import("@/views/customer/edit"),
       meta: {
-          activeMenu: '/customers'
+          activeMenu: '/customers',
+          actions: 'edit'
       }
     }
-  ],
-  meta: {
-    title: '客户管理',
-    level: 1,
-    actions: [
-      {
-        value: 'list',
-        text: '列表'
-      },
-      {
-        value: 'show',
-        text: '详情'
-      },
-      {
-        value: 'create',
-        text: '添加'
-      },
-      {
-        value: 'edit',
-        text: '修改'
-      },
-      {
-        value: 'delete',
-        text: '删除'
-      }
-    ]
-  }
+  ]
 }
 
 export default customer
