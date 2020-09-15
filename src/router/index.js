@@ -40,8 +40,7 @@ const constantRoutes = [
         component: () => import('@/views/error-page/401')
       }
     ]
-  },
-  { path: '*', redirect: '/404' }
+  }
 ];
 
 export const asyncRoutes = [

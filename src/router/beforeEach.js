@@ -1,6 +1,7 @@
 import localforage from "localforage"
 import router from './index'
 import { filterAsyncRoutes } from '@/utils/permission'
+import store from '@/store'
 
 const needAuth = route => route.meta.requiresAuth !== false
 
@@ -19,7 +20,7 @@ const beforeEach = async (to, from, next) => {
     if (needAuth(to) && token === null && to.path.indexOf('auth') < 0) {
       next({ name: 'auth.login'})
     } else{
-      let is_filtered = await localforage.getItem('is_filtered')
+      let is_filtered = store.state.is_filtered
 
       if (is_filtered) {
         next()
@@ -27,7 +28,7 @@ const beforeEach = async (to, from, next) => {
         const asyncRoutes = await filterAsyncRoutes()
 
         router.addRoutes(asyncRoutes)
-        localforage.setItem('is_filtered', true)
+        store.commit('UPDATE_FILTERED', true)
         next({ ...to, replace: true })
       }
     }

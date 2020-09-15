@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from "./router";
 import ElementUI from "element-ui";
 import AsyncComputed from 'vue-async-computed';
+import store from './store'
 
 /* Initialize the plugin */
 Vue.use(AsyncComputed)
@@ -16,5 +17,6 @@ Vue.use(ElementUI);
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')

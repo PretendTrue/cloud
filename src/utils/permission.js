@@ -22,6 +22,7 @@ export async function filterAsyncRoutes() {
     }
   })
 
+  routes.push({ path: '*', redirect: '/404' })
   return routes;
 }
 
